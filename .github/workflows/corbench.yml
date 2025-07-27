@@ -9,7 +9,7 @@ env:
   CLUSTER_NAME: corbench
   DOMAIN_NAME: corbench.cortex.io
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GITHUB_ORG: cortexproject
+  GITHUB_ORG: TheKongers
   GITHUB_REPO: cortex
   GITHUB_STATUS_TARGET_URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
   LAST_COMMIT_SHA: ${{ github.event.client_payload.LAST_COMMIT_SHA }}
@@ -33,7 +33,7 @@ jobs:
           "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$LAST_COMMIT_SHA"
       - name: Run make deploy to start corbench
         id: make_deploy
-        uses: docker://corbench/corbench:master
+        uses: docker://corbench/corbench:latest
         with:
           args: >-
             until make all_nodes_deleted; do echo "waiting for nodepools to be deleted"; sleep 10; done;
@@ -68,7 +68,7 @@ jobs:
           "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$LAST_COMMIT_SHA"
       - name: Run make clean to stop corbench
         id: make_clean
-        uses: docker://corbench/corbench:master
+        uses: docker://corbench/corbench:latest
         with:
           args: >-
             until make all_nodes_running; do echo "waiting for nodepools to be created"; sleep 10; done;
