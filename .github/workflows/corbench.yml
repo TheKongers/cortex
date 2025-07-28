@@ -13,6 +13,7 @@ env:
   GITHUB_REPO: cortex
   GITHUB_STATUS_TARGET_URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
   LAST_COMMIT_SHA: ${{ github.event.client_payload.LAST_COMMIT_SHA }}
+  GKE_PROJECT_ID: 
   PR_NUMBER: ${{ github.event.client_payload.PR_NUMBER }}
   PROVIDER: eks
   CORTEX_TAG: ${{ github.event.client_payload.CORTEX_TAG }}
@@ -30,17 +31,13 @@ jobs:
           -H "Content-Type: application/json"
           --data '{"state":"pending",  "context": "corbench-status-update-start", "target_url": "'$GITHUB_STATUS_TARGET_URL'"}'
           "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$LAST_COMMIT_SHA"
-      - name: Pull corbench image
-        run: docker pull corbench/corbench:latest
       - name: Run make deploy to start corbench
         id: make_deploy
-        run: |
-          docker run --rm \
-            -e AUTH_FILE -e CLUSTER_NAME -e DOMAIN_NAME -e GITHUB_TOKEN \
-            -e GITHUB_ORG -e GITHUB_REPO -e LAST_COMMIT_SHA -e PR_NUMBER \
-            -e PROVIDER -e CORTEX_TAG -e ZONE \
-            corbench/corbench:latest \
-            sh -c "until make all_nodes_deleted; do echo 'waiting for nodepools to be deleted'; sleep 10; done; make deploy"
+        uses: docker://corbench/corbench:latest
+        with:
+          args: >-
+            until make all_nodes_deleted; do echo "waiting for nodepools to be deleted"; sleep 10; done;
+            make deploy;
       - name: Update status to failure
         if: failure()
         run: >-
@@ -69,17 +66,13 @@ jobs:
           -H "Content-Type: application/json"
           --data '{"state":"pending",  "context": "corbench-status-update-cancel", "target_url": "'$GITHUB_STATUS_TARGET_URL'"}'
           "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$LAST_COMMIT_SHA"
-      - name: Pull corbench image
-        run: docker pull corbench/corbench:latest
       - name: Run make clean to stop corbench
         id: make_clean
-        run: |
-          docker run --rm \
-            -e AUTH_FILE -e CLUSTER_NAME -e DOMAIN_NAME -e GITHUB_TOKEN \
-            -e GITHUB_ORG -e GITHUB_REPO -e LAST_COMMIT_SHA -e PR_NUMBER \
-            -e PROVIDER -e CORTEX_TAG -e ZONE \
-            corbench/corbench:latest \
-            sh -c "until make all_nodes_running; do echo 'waiting for nodepools to be created'; sleep 10; done; make clean"
+        uses: docker://corbench/corbench:latest
+        with:
+          args: >-
+            until make all_nodes_running; do echo "waiting for nodepools to be created"; sleep 10; done;
+            make clean;
       - name: Update status to failure
         if: failure()
         run: >-
