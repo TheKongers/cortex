@@ -14,7 +14,6 @@ env:
   GITHUB_STATUS_TARGET_URL: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
   LAST_COMMIT_SHA: ${{ github.event.client_payload.LAST_COMMIT_SHA }}
   PR_NUMBER: ${{ github.event.client_payload.PR_NUMBER }}
-  PROVIDER: eks
   RELEASE: ${{ github.event.client_payload.CORTEX_TAG }}
   ZONE: us-west-2
   EKS_WORKER_ROLE_ARN: ${{ secrets.EKS_WORKER_ROLE_ARN }}
