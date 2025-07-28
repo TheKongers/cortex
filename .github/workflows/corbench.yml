@@ -31,6 +31,10 @@ jobs:
           -H "Content-Type: application/json"
           --data '{"state":"pending",  "context": "corbench-status-update-start", "target_url": "'$GITHUB_STATUS_TARGET_URL'"}'
           "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$LAST_COMMIT_SHA"
+      - name: Create AWS credentials file
+        run: |
+          echo "$AUTH_FILE" > /tmp/aws-credentials
+          echo "AUTH_FILE=/tmp/aws-credentials" >> $GITHUB_ENV
       - name: Run make deploy to start corbench
         id: make_deploy
         uses: docker://corbench/corbench:latest
@@ -66,6 +70,10 @@ jobs:
           -H "Content-Type: application/json"
           --data '{"state":"pending",  "context": "corbench-status-update-cancel", "target_url": "'$GITHUB_STATUS_TARGET_URL'"}'
           "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$LAST_COMMIT_SHA"
+      - name: Create AWS credentials file
+        run: |
+          echo "$AUTH_FILE" > /tmp/aws-credentials
+          echo "AUTH_FILE=/tmp/aws-credentials" >> $GITHUB_ENV
       - name: Run make clean to stop corbench
         id: make_clean
         uses: docker://corbench/corbench:latest
