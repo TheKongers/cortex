@@ -11,7 +11,7 @@
 
 # Cortex
 
-Cortex is a horizontally scalable, highly available, multi-tenant, long term storage solution for [Prometheus](https://prometheus.io) and [OpenTelemetry Metrics](https://opentelemetry.io/docs/specs/otel/metrics/)
+Cortex is a horizontally scalable, highly available, multi-tenant, long term storage solution for [Prometheus](https://prometheus.io) and [OpenTelemetry Metrics](https://opentelemetry.io/docs/specs/otel/metrics/) aaaaa
 
 ## Features
 
