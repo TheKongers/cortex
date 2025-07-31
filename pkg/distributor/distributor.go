@@ -685,6 +685,8 @@ func (d *Distributor) Push(ctx context.Context, req *cortexpb.WriteRequest) (*co
 	span, ctx := opentracing.StartSpanFromContext(ctx, "Distributor.Push")
 	defer span.Finish()
 
+	time.Sleep(200 * time.Millisecond)
+
 	// We will report *this* request in the error too.
 	inflight := d.inflightPushRequests.Inc()
 	defer d.inflightPushRequests.Dec()
@@ -889,6 +891,8 @@ func (d *Distributor) doBatch(ctx context.Context, req *cortexpb.WriteRequest, s
 	if d.cfg.ExtendWrites {
 		op = ring.Write
 	}
+
+	time.Sleep(200 * time.Millisecond)
 
 	return ring.DoBatch(ctx, op, subRing, d.asyncExecutor, keys, func(ingester ring.InstanceDesc, indexes []int) error {
 		timeseries := make([]cortexpb.PreallocTimeseries, 0, len(indexes))
